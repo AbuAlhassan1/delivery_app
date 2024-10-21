@@ -3,6 +3,7 @@ import 'package:delivery/common/controllers/l10n/l10n_cubit.dart';
 import 'package:delivery/common/controllers/theme/theme_cubit.dart';
 import 'package:delivery/common/controllers/theme/theme_cubit_states.dart';
 import 'package:delivery/constants/themes.dart';
+import 'package:delivery/driver/controllers/driver_info/driver_info_cubit.dart';
 import 'package:delivery/routing/routes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => L10nCubit()),
         BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(create: (context) => DriverInfoCubit()),
       ],
       child: const InitRoute()
     );

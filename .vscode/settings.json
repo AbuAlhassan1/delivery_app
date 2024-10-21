@@ -1,0 +1,17 @@
+{
+    "dart.lineLength": 1000,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "diffEditor.hideUnchangedRegions.contextLineCount": 3,
+    "diffEditor.hideUnchangedRegions.minimumLineCount": 3,
+    "editor.inlineSuggest.suppressSuggestions": false,
+    "editor.inlineSuggest.syntaxHighlightingEnabled": true,
+    "editor.quickSuggestions": {
+        "comments": "on",
+        "strings": "on"
+    },
+    "editor.snippetSuggestions": "top",
+    "dart.closingLabelsPrefix": "=>",
+    "dart.closingLabelsTextStyle": "italic",
+    "dart.flutterGenerateLocalizationsOnSave": "manual"
+}

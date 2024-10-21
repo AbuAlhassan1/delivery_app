@@ -1,11 +1,11 @@
 import 'package:delivery/auth/views/login/login_page_wrapper.dart';
-import 'package:delivery/home/views/home_page_wrapper.dart';
+import 'package:delivery/driver/views/driver_profile_page_wrapper.dart';
 import 'package:delivery/routing/route_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/',
   // navigatorKey: navigatorKey,
   redirect: (context, state) {
     return state.fullPath;
@@ -14,7 +14,7 @@ final router = GoRouter(
 
     routeBuilder(
       path: '/',
-      child: (context, state) => const HomePageWrapper(),
+      child: (context, state) => const DriverProfilePageWrapper(),
     ),
 
     routeBuilder(
