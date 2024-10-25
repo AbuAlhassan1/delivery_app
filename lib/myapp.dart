@@ -4,6 +4,7 @@ import 'package:delivery/common/controllers/theme/theme_cubit.dart';
 import 'package:delivery/common/controllers/theme/theme_cubit_states.dart';
 import 'package:delivery/constants/themes.dart';
 import 'package:delivery/driver/controllers/driver_info/driver_info_cubit.dart';
+import 'package:delivery/home/controllers/home/home_cubit.dart';
 import 'package:delivery/routing/routes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => L10nCubit()),
         BlocProvider(create: (context) => ThemeCubit()),
         BlocProvider(create: (context) => DriverInfoCubit()),
+        BlocProvider(create: (context) => HomeCubit()),
       ],
       child: const InitRoute()
     );
@@ -37,7 +39,6 @@ class InitRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        log(constraints.maxHeight.toString());
         return Material(
           color: Colors.white,
           child: Column(
@@ -50,6 +51,9 @@ class InitRoute extends StatelessWidget {
                     splitScreenMode: true,
                     builder: (context, child) => OKToast(
                       child: MaterialApp.router(
+                        // routeInformationParser: router.routeInformationParser,
+                        // routerDelegate: router.routerDelegate,
+                        backButtonDispatcher: null,
                         scrollBehavior: MyCustomScrollBehavior(),
                         scaffoldMessengerKey: scaffoldKey,
                         theme: state == DarkTheme() ? Themes.darkTheme : Themes.lightTheme,

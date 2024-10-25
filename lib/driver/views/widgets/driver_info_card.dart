@@ -45,7 +45,7 @@ class DriverInfoCard extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  context.read<DriverInfoCubit>().driverInfo!.data?.fullName ?? '',
+                  context.read<DriverInfoCubit>().driverInfo!.data?.driverName ?? '',
                   style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)
                 ),
                 Text(
@@ -62,18 +62,27 @@ class DriverInfoCard extends StatelessWidget {
                 ListTile(
                   onTap: () {},
                   leading: const Icon(TablerIcons.user),
-                  title: const Text('Driver Name'),
+                  title: const Text('Full Name'),
                   trailing: Text(
-                    context.read<DriverInfoCubit>().driverInfo!.data?.driverName ?? '',
+                    context.read<DriverInfoCubit>().driverInfo!.data?.fullName ?? '',
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
                   ),
                 ),
                 ListTile(
                   onTap: () {},
-                  leading: const Icon(TablerIcons.user),
-                  title: const Text('totalTax'),
+                  leading: const Icon(TablerIcons.tax),
+                  title: const Text('Total Tax'),
                   trailing: Text(
                     context.read<DriverInfoCubit>().driverInfo!.data?.totalTax.toString() ?? '',
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  leading: const Icon(TablerIcons.clock),
+                  title: const Text('Online Period'),
+                  trailing: Text(
+                    "${context.read<DriverInfoCubit>().driverInfo!.data?.onlineFrom!.h} ${context.read<DriverInfoCubit>().driverInfo!.data?.onlineFrom!.a} - ${context.read<DriverInfoCubit>().driverInfo!.data?.onlineTo!.h} ${context.read<DriverInfoCubit>().driverInfo!.data?.onlineTo!.a}",
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
                   ),
                 ),
