@@ -1,6 +1,7 @@
 import 'package:delivery/driver/views/widgets/driver_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class DriverProfilePageWrapper extends StatelessWidget {
   const DriverProfilePageWrapper({super.key});
@@ -25,14 +26,23 @@ class DriverProfileVertical extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.pop(),
+        child: const Icon(Icons.arrow_forward_rounded),
+      ),
       body: Stack(
         children: [
           const DriverInfoCard(),
           Align(
             alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
-              child: CircleAvatar(radius: MediaQuery.of(context).size.width / 5),
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
+                child: CircleAvatar(
+                  radius: MediaQuery.of(context).size.width / 5,
+                  child: Icon(Icons.person, size: 50.sp),
+                ),
+              ),
             )
           ),
       

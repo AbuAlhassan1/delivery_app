@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:delivery/auth/controllers/auth/auth_cubit.dart';
 import 'package:delivery/common/controllers/l10n/l10n_cubit.dart';
 import 'package:delivery/common/controllers/theme/theme_cubit.dart';
 import 'package:delivery/common/controllers/theme/theme_cubit_states.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => L10nCubit()),
         BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(create: (context) => AuthCubit()),
         BlocProvider(create: (context) => DriverInfoCubit()),
         BlocProvider(create: (context) => HomeCubit()),
       ],
@@ -32,8 +34,20 @@ class MyApp extends StatelessWidget {
 }
 
 
-class InitRoute extends StatelessWidget {
+class InitRoute extends StatefulWidget {
   const InitRoute({super.key});
+
+  @override
+  State<InitRoute> createState() => _InitRouteState();
+}
+
+class _InitRouteState extends State<InitRoute> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthCubit>().onAppInit();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +65,6 @@ class InitRoute extends StatelessWidget {
                     splitScreenMode: true,
                     builder: (context, child) => OKToast(
                       child: MaterialApp.router(
-                        // routeInformationParser: router.routeInformationParser,
-                        // routerDelegate: router.routerDelegate,
                         backButtonDispatcher: null,
                         scrollBehavior: MyCustomScrollBehavior(),
                         scaffoldMessengerKey: scaffoldKey,

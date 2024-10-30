@@ -1,7 +1,11 @@
-import 'package:delivery/common/models/textfield_model.dart';
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:delivery/auth/controllers/auth/auth_cubit.dart';
+import 'package:delivery/auth/utils/login_fields.dart';
 import 'package:delivery/common/views/material_textfield.dart';
 import 'package:delivery/common/views/simple_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,7 +30,7 @@ class LoginPageWrapper extends StatelessWidget {
             Expanded(
               child: Container(
                 color: Colors.white,
-                child: LoginForm(),
+                child: const LoginForm(),
               ),
             ),
           ],
@@ -37,20 +41,7 @@ class LoginPageWrapper extends StatelessWidget {
 }
 
 class LoginForm extends StatelessWidget {
-  LoginForm({super.key});
-
-  final TextFieldDataObject email = TextFieldDataObject(
-    lable: "Email",
-    hint: "Email",
-    name: "Email",
-    validator: (regex, value) => null,
-  );
-  final TextFieldDataObject password = TextFieldDataObject(
-    lable: "Password",
-    hint: "Password",
-    name: "Password",
-    validator: (regex, value) => null,
-  );
+  const LoginForm({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +53,14 @@ class LoginForm extends StatelessWidget {
             const SizedBox(height: 20),
             MaterialTextField(textFieldDataObject: email),
             const SizedBox(height: 20),
-            MaterialTextField(textFieldDataObject: password),
+            MaterialTextField(textFieldDataObject: password, isPassword: true),
             const SizedBox(height: 20),
-            SimpleButton(onTap: () => context.push("/")),
+            SimpleButton(onTap: () async{
+              bool isOk = await context.read<AuthCubit>().login(email.controller.text, password.controller.text);
+              if( isOk ){
+                context.go("/");
+              }
+            }),
           ],
         ),
       ),

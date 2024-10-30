@@ -3,9 +3,23 @@ import 'package:delivery/home/views/widgets/order_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
-class HomePageWrapper extends StatelessWidget {
+class HomePageWrapper extends StatefulWidget {
   const HomePageWrapper({super.key});
+
+  @override
+  State<HomePageWrapper> createState() => _HomePageWrapperState();
+}
+
+class _HomePageWrapperState extends State<HomePageWrapper> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeCubit>().getAllOrders();
+    context.read<HomeCubit>().getCurrentOrders();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,60 +41,75 @@ class HomeVertical extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push('/profile'),
+        child: const Icon(Icons.person),
+      ),
       body: SafeArea(
         bottom: false,
-        child: Column(
-          children: [
-            // Toggle Switch Button for is Active Driver
-            BlocBuilder(
-              bloc: context.read<HomeCubit>(),
-              builder: (context, state) {
-                return SwitchListTile(
+        child: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            if( state is HomeError ){
+              return const Center(child: Text('حدث خطأ ما'));
+            }
+            return Column(
+              children: [
+                SwitchListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(0)),
                   title: Text(context.read<HomeCubit>().isActiveDriver ? 'فعال' : 'غير فعال'),
                   value: context.read<HomeCubit>().isActiveDriver,
-                  onChanged: (value) => context.read<HomeCubit>().toggleActiveDriver(),
-                );
-              },
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(20)),
-                    itemCount: context.read<HomeCubit>().listOfOrdersModel.data!.length,
-                    itemBuilder: (context, index) {
-                      return OrderCard(order: context.read<HomeCubit>().listOfOrdersModel.data![index]);
-                    },
-                  ),
-                  BlocBuilder(
-                    bloc: context.read<HomeCubit>(),
-                    builder: (context, state) => context.read<HomeCubit>().isActiveDriver ? const SizedBox()
-                    : Container(
-                      color: Colors.black.withOpacity(0.9),
-                      width: double.infinity,
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                  onChanged: (value) async => context.read<HomeCubit>().toggleActiveDriver(),
+                ),
+                Expanded(
+                  child: Builder(
+                    builder: (context) {
+
+                      if( state is HomeLoading ){
+                        return const Center(child: CircularProgressIndicator());
+                      } else if( state is HomeError ){
+                        return const Center(child: Text('حدث خطأ ما'));
+                      }
+
+                      return Stack(
                         children: [
-                          Icon(Icons.warning_rounded, color: Colors.red, size: 50),
-                          SizedBox(height: 10),
-                          Text(
-                            'يجب تفعيل الحالة لتظهر الطلبات',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
+                          RefreshIndicator(
+                            onRefresh: () async => await context.read<HomeCubit>().getCurrentOrders(),
+                            child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(20)),
+                              itemCount: context.read<HomeCubit>().listOfCurrentOrdersModel!.data!.length,
+                              itemBuilder: (context, index) {
+                                return OrderCard(order: context.read<HomeCubit>().listOfCurrentOrdersModel!.data![index]);
+                              },
+                            ),
+                          ),
+                          context.read<HomeCubit>().isActiveDriver ? const SizedBox()
+                          : Container(
+                            color: Colors.black.withOpacity(0.9),
+                            width: double.infinity,
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.warning_rounded, color: Colors.red, size: 50),
+                                SizedBox(height: 10),
+                                Text(
+                                  'يجب تفعيل الحالة لتظهر الطلبات',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                  ),
-                  
-                ],
-              )
-            ),
-          ],
+                      );
+                    }
+                  )
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

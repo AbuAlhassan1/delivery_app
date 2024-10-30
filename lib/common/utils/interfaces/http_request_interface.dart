@@ -14,5 +14,13 @@ abstract class HttpRequestInterFace {
     ResponseType? responseType,
     Map<String, dynamic>? queryParameters,
   });
+  Future<Response?> patch<T>({
+    required String path,
+    Options? headers,
+    String? contentType,
+    T? payload,
+    ResponseType? responseType,
+    Map<String, dynamic>? queryParameters,
+  });
   Future<Response?> delete<T>({required String path, Options? headers, T? payload});
 }

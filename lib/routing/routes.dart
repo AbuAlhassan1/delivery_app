@@ -1,8 +1,11 @@
+import 'dart:developer';
+import 'package:delivery/auth/controllers/auth/auth_cubit.dart';
 import 'package:delivery/auth/views/login/login_page_wrapper.dart';
 import 'package:delivery/driver/views/driver_profile_page_wrapper.dart';
 import 'package:delivery/home/views/home_page_wrapper.dart';
 import 'package:delivery/routing/route_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -10,7 +13,14 @@ final router = GoRouter(
   // navigatorKey: navigatorKey,
   
   redirect: (context, state) {
-    return state.fullPath;
+    log(state.fullPath.toString());
+    if( !context.read<AuthCubit>().isLoggedIn && state.fullPath != '/login' ){
+      return '/login';
+    } else if ( context.read<AuthCubit>().isLoggedIn && state.fullPath == '/login' ){
+      return '/';
+    } else {
+      return state.fullPath;
+    }
   },
   routes: [
 

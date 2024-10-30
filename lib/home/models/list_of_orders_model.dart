@@ -35,13 +35,13 @@ class Datum {
   final String? id;
   final int? orderNumber;
   final String? restaurantOrderNo;
-  final int? price;
+  final double? price;
   final String? customerPhoneNumber;
   final String? restaurantName;
   final String? districtName;
   final int? status;
   final String? restaurantNote;
-  final int? deliveryFee;
+  final double? deliveryFee;
 
   Datum({
     this.id,
