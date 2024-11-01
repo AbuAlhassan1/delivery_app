@@ -89,13 +89,14 @@ class OrderCard extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          order.customerPhoneNumber != null ?
                           SelectableText(
                             "الهاتف: ${order.customerPhoneNumber!}",
                             style: TextStyle(
                               fontSize: ScreenUtil().setSp(14),
                               fontWeight: FontWeight.bold,
                             ),
-                          ),
+                          ) : const SizedBox(),
                           Text(
                             "المطعم: ${order.restaurantName!}",
                             style: TextStyle(

@@ -37,10 +37,10 @@ class Data {
   final dynamic phoneNumber;
   final String? driverName;
   final String? email;
-  final int? totalTax;
+  final double? totalTax;
   final bool? isActive;
-  final Online? onlineFrom;
-  final Online? onlineTo;
+  final String? onlineFrom;
+  final String? onlineTo;
 
   Data({
     this.id,
@@ -62,8 +62,8 @@ class Data {
     email: json["email"],
     totalTax: json["totalTax"],
     isActive: json["isActive"],
-    onlineFrom: json["onlineFrom"] == null ? null : Online.fromJson(json["onlineFrom"]),
-    onlineTo: json["onlineTo"] == null ? null : Online.fromJson(json["onlineTo"]),
+    onlineFrom: json["onlineFrom"],
+    onlineTo: json["onlineTo"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -74,8 +74,8 @@ class Data {
     "email": email,
     "totalTax": totalTax,
     "isActive": isActive,
-    "onlineFrom": onlineFrom?.toJson(),
-    "onlineTo": onlineTo?.toJson(),
+    "onlineFrom": onlineFrom,
+    "onlineTo": onlineTo,
   };
 }
 

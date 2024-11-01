@@ -61,4 +61,19 @@ class AuthRepository implements AuthInterface {
 
     return response;
   }
+  
+  @override
+  Future<Response?> registerToken(String token) async {
+    // /Notification/RegisterFcmToken/register-fcm-token?token=asdasd
+    Response? response;
+
+    try{
+      response = await httpRequest.post(path: '/Notification/RegisterFcmToken/register-fcm-token?token=$token');
+    } on DioException catch (e) {
+      log(e.response.toString());
+    }
+
+    return response;
+    
+  }
 }

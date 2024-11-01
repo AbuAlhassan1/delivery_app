@@ -1,8 +1,10 @@
 // ignore_for_file: avoid_print
 import 'dart:developer';
 import 'package:delivery/common/utils/global.dart';
+import 'package:delivery/firebase_options.dart';
 import 'package:delivery/myapp.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -17,6 +19,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   timeago.setLocaleMessages('ar', timeago.ArMessages());
 

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "164031765924",
+    "firebase_url": "https://iraq-delivery-default-rtdb.firebaseio.com",
+    "project_id": "iraq-delivery",
+    "storage_bucket": "iraq-delivery.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164031765924:android:43381940c4f528aa667531",
+        "android_client_info": {
+          "package_name": "come.saif.delivery"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG6zgGhNLDj1-q0VnF0jaqzzmuXj4ty5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
