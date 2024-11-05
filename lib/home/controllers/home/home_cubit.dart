@@ -15,9 +15,8 @@ class HomeCubit extends Cubit<HomeState> {
   final OrdersInterface ordersRepository = locator.get<OrdersInterface>();
 
   bool isActiveDriver = false;
-
-  ListOfOrdersModel? listOfOrdersModel;
   ListOfOrdersModel? listOfCurrentOrdersModel;
+  bool isHomeDisabled = false;
 
   toggleActiveDriver() async{
     isActiveDriver = !isActiveDriver;
@@ -30,45 +29,18 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeInitial());
   }
 
-  Future<void> getAllOrders() async {
-    emit(HomeLoading());
-    Response? response;
-    try {
-      response = await ordersRepository.getAllOrders();
-    } catch (e) {
-      log(e.toString());
-      emit(HomeError());
-      showToast(
-        message: "حدث خطأ ما",
-        toastType: ToastType.error,
-      );
-      return;
-    }
-
-    if ( response != null && response.statusCode == 200) {
-      listOfOrdersModel = ListOfOrdersModel.fromJson(response.data);
-    } else {
-      emit(HomeError());
-      showToast(
-        message: "حدث خطأ ما",
-        toastType: ToastType.error,
-      );
-      return;
-    }
-
-    emit(HomeLoaded());
-  }
-
   Future<void> getCurrentOrders() async {
     emit(HomeLoading());
     Response? response;
     try {
       response = await ordersRepository.getCurrentOrders();
-    } catch (e) {
-      log(e.toString());
-      emit(HomeError());
+    } on DioException catch (e) {
+      if( e.response != null && e.response!.statusCode == 400 ){
+        isHomeDisabled = true;
+      }
+      emit(HomeError(e.response != null ? e.response!.data['message'] : 'حدث خطأ ما'));
       showToast(
-        message: "حدث خطأ ما",
+        message: e.response != null ? e.response!.data['message'] : 'حدث خطأ ما',
         toastType: ToastType.error,
       );
       return;
@@ -76,10 +48,14 @@ class HomeCubit extends Cubit<HomeState> {
 
     if ( response != null && response.statusCode == 200) {
       listOfCurrentOrdersModel = ListOfOrdersModel.fromJson(response.data);
+      isHomeDisabled = false;
     } else {
-      emit(HomeError());
+      if( response != null && response.statusCode == 400 ){
+        isHomeDisabled = true;
+      }
+      emit(HomeError(response != null ? response.data['message'] : 'حدث خطأ ما'));
       showToast(
-        message: "حدث خطأ ما",
+        message: response != null ? response.data['message'] : 'حدث خطأ ما',
         toastType: ToastType.error,
       );
       return;
@@ -95,7 +71,7 @@ class HomeCubit extends Cubit<HomeState> {
       response = await ordersRepository.toggleIsActive(isActiveDriver);
     } catch (e) {
       log(e.toString());
-      emit(HomeError());
+      emit(HomeError(response != null ? response.data['message'] : 'حدث خطأ ما'));
       showToast(
         message: "حدث خطأ ما",
         toastType: ToastType.error,
@@ -111,7 +87,7 @@ class HomeCubit extends Cubit<HomeState> {
       );
       return true;
     } else {
-      emit(HomeError());
+      emit(HomeError(response != null ? response.data['message'] : 'حدث خطأ ما'));
       showToast(
         message: "حدث خطأ ما",
         toastType: ToastType.error,
@@ -141,6 +117,7 @@ class HomeCubit extends Cubit<HomeState> {
         toastType: ToastType.success,
       );
     } else {
+      emit(HomeError(response != null ? response.data['message'] : 'حدث خطأ ما'));
       showToast(
         message: "حدث خطأ ما",
         toastType: ToastType.error,

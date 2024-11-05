@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class OrderCard extends StatelessWidget {
+class NotificationOrderCard extends StatelessWidget {
   final Datum order;
-  const OrderCard({super.key, required this.order});
+  const NotificationOrderCard({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -28,34 +28,6 @@ class OrderCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           clipBehavior: Clip.none,
           child: InkWell(
-            onTap: () => showDialog(
-              context: context,
-              // show two buttons to change the order status
-              builder: (context) => AlertDialog(
-                title: const Text('تغيير حالة الطلب'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // change the order status to 'جاري التوصيل'
-                        context.read<HomeCubit>().changeOrderStatus(4, order.id!);
-                        Navigator.pop(context);
-                      },
-                      child: const Text('جاري التوصيل'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // change the order status to 'تم التوصيل'
-                        context.read<HomeCubit>().changeOrderStatus(5, order.id!);
-                        Navigator.pop(context);
-                      },
-                      child: const Text('تم التوصيل'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
             borderRadius: BorderRadius.circular(10),
             child: Padding(
               padding: EdgeInsets.all(ScreenUtil().setHeight(20)),

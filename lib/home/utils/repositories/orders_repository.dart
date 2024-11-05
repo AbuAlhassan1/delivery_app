@@ -33,6 +33,7 @@ class OrdersRepository implements OrdersInterface {
       response = await httpRequest.get( path: '/Order/GetMyCurrentOrders');
     } catch (e) {
       log(e.toString());
+      rethrow;
     }
     return response;
 

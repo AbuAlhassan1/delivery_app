@@ -36,9 +36,11 @@ class Data {
   final String? fullName;
   final dynamic phoneNumber;
   final String? driverName;
+  final String? driverId;
   final String? email;
   final double? totalTax;
   final bool? isActive;
+  final bool? isWorking;
   final String? onlineFrom;
   final String? onlineTo;
 
@@ -47,9 +49,11 @@ class Data {
     this.fullName,
     this.phoneNumber,
     this.driverName,
+    this.driverId,
     this.email,
     this.totalTax,
     this.isActive,
+    this.isWorking,
     this.onlineFrom,
     this.onlineTo,
   });
@@ -59,9 +63,11 @@ class Data {
     fullName: json["fullName"],
     phoneNumber: json["phoneNumber"],
     driverName: json["driverName"],
+    driverId: json["driverId"],
     email: json["email"],
     totalTax: json["totalTax"],
     isActive: json["isActive"],
+    isWorking: json["isWorking"],
     onlineFrom: json["onlineFrom"],
     onlineTo: json["onlineTo"]
   );
@@ -71,9 +77,11 @@ class Data {
     "fullName": fullName,
     "phoneNumber": phoneNumber,
     "driverName": driverName,
+    "driverId": driverId,
     "email": email,
     "totalTax": totalTax,
     "isActive": isActive,
+    "isWorking": isWorking,
     "onlineFrom": onlineFrom,
     "onlineTo": onlineTo,
   };

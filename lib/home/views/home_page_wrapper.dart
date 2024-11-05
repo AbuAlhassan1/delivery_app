@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
-
+import 'package:delivery/auth/controllers/auth/auth_cubit.dart';
 import 'package:delivery/driver/controllers/driver_info/driver_info_cubit.dart';
+import 'package:delivery/helper/firebase_notification.dart';
 import 'package:delivery/home/controllers/home/home_cubit.dart';
 import 'package:delivery/home/views/widgets/order_card.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -24,24 +24,26 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
 
   Future<void> onInit() async {
     await context.read<DriverInfoCubit>().getDriverProfileInfo();
-    context.read<HomeCubit>().isActiveDriver = context.read<DriverInfoCubit>().driverInfo!.data!.isActive!;
-    await context.read<HomeCubit>().getAllOrders();
     await context.read<HomeCubit>().getCurrentOrders();
+    context.read<HomeCubit>().isActiveDriver = context.read<DriverInfoCubit>().driverInfo!.data!.isWorking!;
+    // await context.read<HomeCubit>().getAllOrders();
+
+    databaseRef = FirebaseDatabase.instance.ref().child("DriverShowOrdersDialog")
+    .child(context.read<DriverInfoCubit>().driverInfo!.data!.driverId.toString());
+
+    // Set up the listener for real-time updates
+    databaseRef.onValue.listen((DatabaseEvent event) async{
+      log("updated");
+      await context.read<HomeCubit>().getCurrentOrders();
+      // context.read<HomeCubit>().getAllOrders();
+    });
   }
 
   @override
   void initState() {
     super.initState();
+    setupFirebaseMessaging(context);
     onInit();
-    // Initialize the database reference
-    databaseRef = FirebaseDatabase.instance.ref();
-
-    // Set up the listener for real-time updates
-    databaseRef.onValue.listen((DatabaseEvent event) {
-      final data = event.snapshot.value;
-      context.read<HomeCubit>().getCurrentOrders();
-      context.read<HomeCubit>().getAllOrders();
-    });
   }
 
   @override
@@ -55,8 +57,10 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
               const Expanded(child: HomeVertical()),
               ElevatedButton(
                 onPressed: () async {
-                  var x = await databaseRef.child("DriverShowOrdersDialog").get();
-                  log(x.child(context.read<DriverInfoCubit>().driverInfo!.data!.id.toString()).value.toString());
+                  // var x = await databaseRef.child("DriverShowOrdersDialog").get();
+                  // log(x.child(context.read<DriverInfoCubit>().driverInfo!.data!.driverId.toString()).value.toString());
+                  // log(x.value.toString());
+                  context.read<AuthCubit>().getFirebaseToken();
                 },
                 child: const Text("Click")
               ),
@@ -84,16 +88,17 @@ class HomeVertical extends StatelessWidget {
         bottom: false,
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
-            if( state is HomeError ){
-              return const Center(child: Text('حدث خطأ ما'));
-            }
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SwitchListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(0)),
-                  title: Text(context.read<HomeCubit>().isActiveDriver ? 'فعال' : 'غير فعال'),
-                  value: context.read<HomeCubit>().isActiveDriver,
-                  onChanged: (value) async => context.read<HomeCubit>().toggleActiveDriver(),
+                IgnorePointer(
+                  ignoring: context.read<HomeCubit>().isHomeDisabled,
+                  child: SwitchListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(0)),
+                    title: Text(context.read<HomeCubit>().isActiveDriver ? 'فعال' : 'غير فعال'),
+                    value: context.read<HomeCubit>().isActiveDriver,
+                    onChanged: (value) async => context.read<HomeCubit>().toggleActiveDriver(),
+                  ),
                 ),
                 Expanded(
                   child: Builder(
@@ -102,7 +107,25 @@ class HomeVertical extends StatelessWidget {
                       if( state is HomeLoading ){
                         return const Center(child: CircularProgressIndicator());
                       } else if( state is HomeError ){
-                        return const Center(child: Text('حدث خطأ ما'));
+                        return RefreshIndicator(
+                          onRefresh: () async => await context.read<HomeCubit>().getCurrentOrders(),
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            clipBehavior: Clip.none,
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height - 100,
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(40)),
+                                  child: Text(
+                                    state.message,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
                       } else if( context.read<HomeCubit>().listOfCurrentOrdersModel == null ){
                         return const Center(child: Text('لا يوجد طلبات'));
                       }

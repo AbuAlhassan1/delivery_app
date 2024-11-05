@@ -2,6 +2,7 @@
 
 import 'package:delivery/auth/controllers/auth/auth_cubit.dart';
 import 'package:delivery/driver/controllers/driver_info/driver_info_cubit.dart';
+import 'package:delivery/driver/views/orders_history.dart';
 import 'package:delivery/home/controllers/home/home_cubit.dart';
 import 'package:delivery/home/views/widgets/order_card.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class DriverInfoCard extends StatelessWidget {
                   ListTile(
                     onTap: () {},
                     leading: const Icon(TablerIcons.user),
-                    title: const Text('Full Name'),
+                    title: const Text('اسم السائق'),
                     trailing: Text(
                       context.read<DriverInfoCubit>().driverInfo!.data?.fullName ?? '',
                       style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
@@ -75,8 +76,17 @@ class DriverInfoCard extends StatelessWidget {
                   ),
                   ListTile(
                     onTap: () {},
+                    leading: const Icon(TablerIcons.user),
+                    title: const Text('الحالة'),
+                    trailing: Text(
+                      context.read<DriverInfoCubit>().driverInfo!.data!.isActive! ? 'فعال' : 'غير فعال',
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {},
                     leading: const Icon(TablerIcons.tax),
-                    title: const Text('Total Tax'),
+                    title: const Text('الضريبة الاجمالية'),
                     trailing: Text(
                       context.read<DriverInfoCubit>().driverInfo!.data?.totalTax.toString() ?? '',
                       style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
@@ -85,50 +95,30 @@ class DriverInfoCard extends StatelessWidget {
                   ListTile(
                     onTap: () {},
                     leading: const Icon(TablerIcons.clock),
-                    title: const Text('Online Period'),
+                    title: const Text('وقت الدوام'),
                     trailing: Text(
                       "${context.read<DriverInfoCubit>().driverInfo!.data?.onlineFrom!} -- ${context.read<DriverInfoCubit>().driverInfo!.data?.onlineTo!}",
                       style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
                     ),
                   ),
                   ListTile(
-                    // show all orders ...
+                    onTap: () {},
+                    leading: const Icon(TablerIcons.clock),
+                    title: const Text('رقم الهاتف'),
+                    trailing: Text(
+                      "${context.read<DriverInfoCubit>().driverInfo!.data?.phoneNumber?? 'لايوجد'}",
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
+                    ),
+                  ),
+                  ListTile(
                     onTap: () => showDialog(
                       context: context,
                       builder: (context) {
-                        return Scaffold(
-                          appBar: AppBar(
-                            title: const Text('كل الطلبات', style: TextStyle(color: Colors.black)),
-                            backgroundColor: Colors.white,
-                            leading: IconButton(
-                              icon: const Icon(Icons.arrow_back, color: Colors.black),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ),
-                          body: BlocBuilder<HomeCubit, HomeState>(
-                            builder: (context, state) {
-                              if( state is HomeLoading ){
-                                return const Center(child: CircularProgressIndicator());
-                              } else if( state is HomeError ){
-                                return const Center(child: Text('حدث خطأ ما'));
-                              }
-                              return context.read<HomeCubit>().listOfOrdersModel != null ? RefreshIndicator(
-                                onRefresh: () async => await context.read<HomeCubit>().getAllOrders(),
-                                child: ListView.builder(
-                                  padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(20)),
-                                  itemCount: context.read<HomeCubit>().listOfOrdersModel!.data!.length,
-                                  itemBuilder: (context, index) {
-                                    return OrderCard(order: context.read<HomeCubit>().listOfOrdersModel!.data![index]);
-                                  },
-                                ),
-                              ) : const Center(child: Text('حدث خطأ ما'));
-                            }
-                          ),
-                        );
+                        return const OrdersHistory();
                       }
                     ),
                     leading: const Icon(Icons.list_alt_rounded, color: Colors.black),
-                    title: const Text('كل الطلبات', style: TextStyle(color: Colors.black)),
+                    title: const Text('سجل الطلبات', style: TextStyle(color: Colors.black)),
                   ),
                   ListTile(
                     onTap: () async {
