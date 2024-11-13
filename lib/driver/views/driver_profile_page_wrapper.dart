@@ -26,10 +26,15 @@ class DriverProfileVertical extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('دلفــري العراق'),
+        centerTitle: true,
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.pop(),
-        child: const Icon(Icons.arrow_forward_rounded),
+        child: const Icon(Icons.arrow_back_rounded),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       body: Stack(
         children: [
           const DriverInfoCard(),

@@ -52,18 +52,18 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
     return LayoutBuilder(
       builder: (context, constraints) {
         if ((constraints.maxWidth + 100.sp) < constraints.maxHeight) {
-          return Column(
+          return const Column(
             children: [
-              const Expanded(child: HomeVertical()),
-              ElevatedButton(
-                onPressed: () async {
-                  // var x = await databaseRef.child("DriverShowOrdersDialog").get();
-                  // log(x.child(context.read<DriverInfoCubit>().driverInfo!.data!.driverId.toString()).value.toString());
-                  // log(x.value.toString());
-                  context.read<AuthCubit>().getFirebaseToken();
-                },
-                child: const Text("Click")
-              ),
+              Expanded(child: HomeVertical()),
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     // var x = await databaseRef.child("DriverShowOrdersDialog").get();
+              //     // log(x.child(context.read<DriverInfoCubit>().driverInfo!.data!.driverId.toString()).value.toString());
+              //     // log(x.value.toString());
+              //     context.read<AuthCubit>().getFirebaseToken();
+              //   },
+              //   child: const Text("Click")
+              // ),
             ],
           );
         } else {
@@ -80,6 +80,10 @@ class HomeVertical extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('دلفــري العراق'),
+        centerTitle: true,
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/profile'),
         child: const Icon(Icons.person),

@@ -11,7 +11,7 @@ class OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(0)),
+      padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(20)),
       child: Container(
         decoration: BoxDecoration(
           boxShadow: [
