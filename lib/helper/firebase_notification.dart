@@ -43,26 +43,22 @@ class AlertNotification extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height,
       padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20), vertical: ScreenUtil().setHeight(100)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: EdgeInsets.all(ScreenUtil().setWidth(20)),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(ScreenUtil().setWidth(10)),
-              ),
-              child: Column(
-                children: List.generate(
-                  orders.length,
-                  (index) => NotificationOrderCard(order: Datum.fromJson(orders[index]))
-                ),
+      child: Expanded(
+        child: Container(
+          padding: EdgeInsets.all(ScreenUtil().setWidth(20)),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(ScreenUtil().setWidth(10)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: List.generate(
+                orders.length,
+                (index) => NotificationOrderCard(order: Datum.fromJson(orders[index]))
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

@@ -1,7 +1,5 @@
-import 'package:delivery/home/controllers/home/home_cubit.dart';
 import 'package:delivery/home/models/list_of_orders_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NotificationOrderCard extends StatelessWidget {
@@ -11,7 +9,7 @@ class NotificationOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(0)),
+      padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(10)),
       child: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -27,65 +25,91 @@ class NotificationOrderCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
           clipBehavior: Clip.none,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding: EdgeInsets.all(ScreenUtil().setHeight(20)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: EdgeInsets.all(ScreenUtil().setHeight(20)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'رقم الطلب #${order.orderNumber}',
-                        style: TextStyle(
-                          fontSize: ScreenUtil().setSp(16),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'الحالة: ${
-                          order.status == 1 ? 'لديه سائق' :
-                          order.status == 2 ? 'ملغي من قبل السائق' :
-                          order.status == 3 ? 'ذاهب للمطعم' :
-                          order.status == 4 ? 'جاري التوصيل' :
-                          order.status == 5 ? 'تم التوصيل' :
-                          order.status == 6 ? 'ملغي' : ''
-                        }',
-                        style: TextStyle(
-                          fontSize: ScreenUtil().setSp(14),
-                          // color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      
-                      // const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          order.customerPhoneNumber != null ?
-                          SelectableText(
-                            "الهاتف: ${order.customerPhoneNumber!}",
+                          Text(
+                            'رقم الطلب #${order.orderNumber}',
                             style: TextStyle(
-                              fontSize: ScreenUtil().setSp(14),
+                              fontSize: ScreenUtil().setSp(16),
                               fontWeight: FontWeight.bold,
                             ),
-                          ) : const SizedBox(),
+                          ),
                           Text(
-                            "المطعم: ${order.restaurantName?? ""}",
+                            'الحالة: ${
+                              order.status == 1 ? 'لديه سائق' :
+                              order.status == 2 ? 'ملغي من قبل السائق' :
+                              order.status == 3 ? 'ذاهب للمطعم' :
+                              order.status == 4 ? 'جاري التوصيل' :
+                              order.status == 5 ? 'تم التوصيل' :
+                              order.status == 6 ? 'ملغي' : ''
+                            }',
                             style: TextStyle(
+                              fontSize: ScreenUtil().setSp(14),
+                              // color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          
+                          // const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              order.customerPhoneNumber != null ?
+                              SelectableText(
+                                "الهاتف: ${order.customerPhoneNumber!}",
+                                style: TextStyle(
+                                  fontSize: ScreenUtil().setSp(14),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ) : const SizedBox(),
+                              Text(
+                                "المطعم: ${order.restaurantName?? ""}",
+                                style: TextStyle(
+                                  fontSize: ScreenUtil().setSp(14),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "الى منطقة: ${order.districtName?? ""}",
+                                style: TextStyle(
+                                  fontSize: ScreenUtil().setSp(14),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'مبلغ الطلب: ${order.price}',
+                            style: TextStyle(
+                              color: Colors.green,
                               fontSize: ScreenUtil().setSp(14),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            "الى منطقة: ${order.districtName?? ""}",
+                            'تكلفة التوصيل: ${order.deliveryFee}',
                             style: TextStyle(
+                              color: Colors.green,
                               fontSize: ScreenUtil().setSp(14),
                               fontWeight: FontWeight.bold,
                             ),
@@ -94,31 +118,37 @@ class NotificationOrderCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'مبلغ الطلب: ${order.price}',
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontSize: ScreenUtil().setSp(14),
-                          fontWeight: FontWeight.bold,
-                        ),
+                ),
+              ),
+            
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 1,
+                      color: Colors.grey.withOpacity(0.5),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(ScreenUtil().setHeight(10)),
+                    color: Colors.white,
+                    child: Text(
+                      'التفاصيل',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: ScreenUtil().setSp(14),
                       ),
-                      Text(
-                        'تكلفة التوصيل: ${order.deliveryFee}',
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontSize: ScreenUtil().setSp(14),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 1,
+                      color: Colors.grey.withOpacity(0.5),
+                    ),
                   ),
                 ],
-              ),
-            ),
+              )
+            ],
           ),
         ),
       ),

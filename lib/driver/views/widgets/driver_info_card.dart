@@ -3,8 +3,6 @@
 import 'package:delivery/auth/controllers/auth/auth_cubit.dart';
 import 'package:delivery/driver/controllers/driver_info/driver_info_cubit.dart';
 import 'package:delivery/driver/views/orders_history.dart';
-import 'package:delivery/home/controllers/home/home_cubit.dart';
-import 'package:delivery/home/views/widgets/order_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

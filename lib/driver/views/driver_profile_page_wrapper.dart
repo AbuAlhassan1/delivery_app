@@ -1,10 +1,24 @@
+import 'package:delivery/driver/controllers/driver_info/driver_info_cubit.dart';
 import 'package:delivery/driver/views/widgets/driver_info_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-class DriverProfilePageWrapper extends StatelessWidget {
+class DriverProfilePageWrapper extends StatefulWidget {
   const DriverProfilePageWrapper({super.key});
+
+  @override
+  State<DriverProfilePageWrapper> createState() => _DriverProfilePageWrapperState();
+}
+
+class _DriverProfilePageWrapperState extends State<DriverProfilePageWrapper> {
+
+  @override
+  void initState() {
+    context.read<DriverInfoCubit>().getDriverProfileInfo();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
