@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:delivery/auth/controllers/auth/auth_cubit.dart';
+import 'package:delivery/common/controllers/cubit/orders_notification_cubit_cubit.dart';
 import 'package:delivery/common/controllers/l10n/l10n_cubit.dart';
 import 'package:delivery/common/controllers/theme/theme_cubit.dart';
 import 'package:delivery/common/controllers/theme/theme_cubit_states.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => L10nCubit()),
         BlocProvider(create: (context) => ThemeCubit()),
         BlocProvider(create: (context) => AuthCubit()),
+        BlocProvider(create: (context) => OrdersNotificationCubitCubit()),
         BlocProvider(create: (context) => DriverInfoCubit()),
         BlocProvider(create: (context) => HomeCubit()),
       ],

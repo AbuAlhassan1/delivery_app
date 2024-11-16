@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:164031765924:android:43381940c4f528aa667531",
+        "mobilesdk_app_id": "1:164031765924:android:f1bdc34ffa8fc787667531",
         "android_client_info": {
-          "package_name": "come.saif.delivery"
+          "package_name": "com.saif.delivery"
         }
       },
       "oauth_client": [],

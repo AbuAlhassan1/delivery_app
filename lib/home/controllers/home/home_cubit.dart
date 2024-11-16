@@ -38,12 +38,22 @@ class HomeCubit extends Cubit<HomeState> {
       if( e.response != null && e.response!.statusCode == 400 ){
         isHomeDisabled = true;
       }
-      emit(HomeError(e.response != null ? e.response!.data['message'] : 'حدث خطأ ما'));
-      showToast(
-        message: e.response != null ? e.response!.data['message'] : 'حدث خطأ ما',
-        toastType: ToastType.error,
-      );
-      return;
+      log("Responsssssssssssssssse: ${e.response!.data.runtimeType}");
+      if( e.response!.data.runtimeType == Map ){
+        emit(HomeError(e.response!.data['message'].toString()));
+        showToast(
+          message: e.response!.data['message'].toString(),
+          toastType: ToastType.error,
+        );
+        return;
+      } else {
+        emit(HomeError("حدث خطأ ما"));
+        showToast(
+          message: e.message.toString(),
+          toastType: ToastType.error,
+        );
+        return;
+      }
     }
 
     if ( response != null && response.statusCode == 200) {
@@ -101,6 +111,36 @@ class HomeCubit extends Cubit<HomeState> {
     Response? response;
     try {
       response = await ordersRepository.changeOrderStatus(status, orderId);
+    } catch (e) {
+      log(e.toString());
+      showToast(
+        message: "حدث خطأ ما",
+        toastType: ToastType.error,
+      );
+      return;
+    }
+
+    if ( response != null && response.statusCode == 200) {
+      emit(HomeLoaded());
+      showToast(
+        message: "تم تغيير حالة الطلب",
+        toastType: ToastType.success,
+      );
+    } else {
+      emit(HomeError(response != null ? response.data['message'] : 'حدث خطأ ما'));
+      showToast(
+        message: "حدث خطأ ما",
+        toastType: ToastType.error,
+      );
+      return;
+    }
+  }
+
+  Future<void> acceptOrRejectOrder(String orderId, bool isAccept) async {
+    emit(HomeLoading());
+    Response? response;
+    try {
+      response = await ordersRepository.acceptOrRejectOrder(orderId, isAccept);
     } catch (e) {
       log(e.toString());
       showToast(

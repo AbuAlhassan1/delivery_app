@@ -5,4 +5,5 @@ abstract class OrdersInterface {
   Future<Response?> getCurrentOrders();
   Future<Response?> toggleIsActive(bool isActive);
   Future<Response?> changeOrderStatus(int status, String orderId);
+  Future<Response?> acceptOrRejectOrder(String orderId, bool isAccept);
 }

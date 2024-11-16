@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCG6zgGhNLDj1-q0VnF0jaqzzmuXj4ty5U',
-    appId: '1:164031765924:android:43381940c4f528aa667531',
+    appId: '1:164031765924:android:f1bdc34ffa8fc787667531',
     messagingSenderId: '164031765924',
     projectId: 'iraq-delivery',
     databaseURL: 'https://iraq-delivery-default-rtdb.firebaseio.com',
@@ -60,11 +60,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAraIi7rieDN3OXAP8n2qoDhkkB2QBWo50',
-    appId: '1:164031765924:ios:a379f68084f4fd2a667531',
+    appId: '1:164031765924:ios:094c453c79a77a98667531',
     messagingSenderId: '164031765924',
     projectId: 'iraq-delivery',
     databaseURL: 'https://iraq-delivery-default-rtdb.firebaseio.com',
     storageBucket: 'iraq-delivery.firebasestorage.app',
-    iosBundleId: 'com.example.delivery',
+    iosBundleId: 'com.saif.delivery',
   );
 }

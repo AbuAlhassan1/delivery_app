@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:delivery/common/controllers/cubit/orders_notification_cubit_cubit.dart';
 import 'package:delivery/helper/notification/notification_order_card.dart';
 import 'package:delivery/home/models/list_of_orders_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:glowy_borders/glowy_borders.dart';
 
 void setupFirebaseMessaging(BuildContext context) async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -21,50 +24,68 @@ void setupFirebaseMessaging(BuildContext context) async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     log('foreground Message data: ${message.data}');
     if (message.notification != null) {
-      log('Message also contained a notification: ${message.notification!.body}');
+      context.read<OrdersNotificationCubitCubit>().orders = jsonDecode(message.data['orders'].toString());
       showDialog(
         context: context,
-        builder: (context) => AlertNotification(notification: message.notification!),
+        barrierColor: Colors.transparent,
+        builder: (context) => AlertNotification(notification: message),
       );
     }
   });
 }
 
 class AlertNotification extends StatelessWidget {
-  final RemoteNotification notification;
+  final RemoteMessage notification;
   const AlertNotification({super.key, required this.notification});
 
   @override
   Widget build(BuildContext context) {
 
-    List orders = jsonDecode(notification.body.toString());
-    log("orders: $orders");
-
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20), vertical: ScreenUtil().setHeight(100)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: EdgeInsets.all(ScreenUtil().setWidth(20)),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(ScreenUtil().setWidth(10)),
-              ),
-              child: Column(
-                children: List.generate(
-                  orders.length,
-                  (index) => NotificationOrderCard(order: Datum.fromJson(orders[index]))
+    return AnimatedGradientBorder(
+      borderSize: 5,
+      glowSize: 2,
+      gradientColors: const [
+        Colors.blue,
+        Colors.orange,
+        Colors.green,
+      ],
+      // animationProgress: currentProgress,
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('طلبات جديدة'),
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.only(
+                    top: ScreenUtil().setHeight(20),
+                    left: ScreenUtil().setWidth(20),
+                    right: ScreenUtil().setWidth(20),
+                  ),
+                  child: BlocBuilder<OrdersNotificationCubitCubit, OrdersNotificationCubitState>(
+                    builder: (context, state) {
+                      return Column(
+                        children: List.generate(
+                            context.read<OrdersNotificationCubitCubit>().orders.length,
+                            (index) => Padding(
+                              padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(20)),
+                              child: NotificationOrderCard(order: Datum.fromJson(context.read<OrdersNotificationCubitCubit>().orders[index])),
+                            )
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
-

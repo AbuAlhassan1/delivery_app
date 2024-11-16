@@ -71,5 +71,21 @@ class OrdersRepository implements OrdersInterface {
     }
     return response;
   }
+  
+  @override
+  Future<Response?> acceptOrRejectOrder(String orderId, bool isAccept) async {
+    // Order/AcceptOrRejectOrder/{orderId}/{isAccept}
+
+    Response? response;
+
+    try {
+      response = await httpRequest.patch(path: '/Order/AcceptOrRejectOrder/$orderId/$isAccept');
+    } catch (e) {
+      log(e.toString());
+    }
+    return response;
+  }
+
+  
 
 }
