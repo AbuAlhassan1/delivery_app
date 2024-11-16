@@ -4,7 +4,6 @@ import 'package:delivery/common/controllers/cubit/orders_notification_cubit_cubi
 import 'package:delivery/home/controllers/home/home_cubit.dart';
 import 'package:delivery/home/models/list_of_orders_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NotificationOrderCard extends StatefulWidget {
@@ -36,7 +35,7 @@ class _NotificationOrderCardState extends State<NotificationOrderCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(0)),
+      padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(10)),
       child: Container(
         decoration: BoxDecoration(
           boxShadow: [
