@@ -17,18 +17,18 @@ class ListOfOrdersModel {
   });
 
   factory ListOfOrdersModel.fromJson(Map<String, dynamic> json) => ListOfOrdersModel(
-    error: json["error"],
-    message: json["message"],
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
-    count: json["count"],
-  );
+        error: json["error"],
+        message: json["message"],
+        data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+        count: json["count"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "error": error,
-    "message": message,
-    "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
-    "count": count,
-  };
+        "error": error,
+        "message": message,
+        "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "count": count,
+      };
 }
 
 class Datum {
@@ -42,6 +42,7 @@ class Datum {
   final int? status;
   final String? restaurantNote;
   final double? deliveryFee;
+  final String? restaurantLocation;
 
   Datum({
     this.id,
@@ -54,31 +55,34 @@ class Datum {
     this.status,
     this.restaurantNote,
     this.deliveryFee,
+    this.restaurantLocation,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json["id"],
-    orderNumber: json["orderNumber"],
-    restaurantOrderNo: json["restaurantOrderNo"],
-    price: json["price"],
-    customerPhoneNumber: json["customerPhoneNumber"],
-    restaurantName: json["restaurantName"],
-    districtName: json["districtName"],
-    status: json["status"],
-    restaurantNote: json["restaurantNote"],
-    deliveryFee: json["deliveryFee"],
-  );
+        id: json["id"],
+        orderNumber: json["orderNumber"],
+        restaurantOrderNo: json["restaurantOrderNo"],
+        price: json["price"],
+        customerPhoneNumber: json["customerPhoneNumber"],
+        restaurantName: json["restaurantName"],
+        districtName: json["districtName"],
+        status: json["status"],
+        restaurantNote: json["restaurantNote"],
+        deliveryFee: json["deliveryFee"],
+        restaurantLocation: json["restaurantLocation"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "orderNumber": orderNumber,
-    "restaurantOrderNo": restaurantOrderNo,
-    "price": price,
-    "customerPhoneNumber": customerPhoneNumber,
-    "restaurantName": restaurantName,
-    "districtName": districtName,
-    "status": status,
-    "restaurantNote": restaurantNote,
-    "deliveryFee": deliveryFee,
-  };
+        "id": id,
+        "orderNumber": orderNumber,
+        "restaurantOrderNo": restaurantOrderNo,
+        "price": price,
+        "customerPhoneNumber": customerPhoneNumber,
+        "restaurantName": restaurantName,
+        "districtName": districtName,
+        "status": status,
+        "restaurantNote": restaurantNote,
+        "deliveryFee": deliveryFee,
+        "restaurantLocation": restaurantLocation,
+      };
 }

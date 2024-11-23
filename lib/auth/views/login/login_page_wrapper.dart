@@ -20,11 +20,10 @@ class LoginPageWrapper extends StatelessWidget {
         body: Column(
           children: [
             Expanded(
-              child: Container(
-                color: Colors.blue,
-                child: const Center(
-                  child: Text('Logo'),
-                ),
+              // show png/IraqDelivery.png image
+              child: Image.asset(
+                'assets/png/IraqDelivery.png',
+                fit: BoxFit.cover,
               ),
             ),
             Expanded(
@@ -55,9 +54,9 @@ class LoginForm extends StatelessWidget {
             const SizedBox(height: 20),
             MaterialTextField(textFieldDataObject: password, isPassword: true),
             const SizedBox(height: 20),
-            SimpleButton(onTap: () async{
+            SimpleButton(onTap: () async {
               bool isOk = await context.read<AuthCubit>().login(email.controller.text, password.controller.text);
-              if( isOk ){
+              if (isOk) {
                 context.go("/");
               }
             }),

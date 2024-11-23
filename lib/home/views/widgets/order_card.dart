@@ -5,10 +5,20 @@ import 'package:delivery/home/models/list_of_orders_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderCard extends StatelessWidget {
   final Datum order;
+
   const OrderCard({super.key, required this.order});
+
+  Future<void> _openGoogleMaps(String locationUrl) async {
+    if (await canLaunchUrl(Uri.parse(locationUrl))) {
+      await launchUrl(Uri.parse(locationUrl));
+    } else {
+      throw 'Could not open Google Maps URL: $locationUrl';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +42,6 @@ class OrderCard extends StatelessWidget {
           child: InkWell(
             onTap: () => showDialog(
               context: context,
-              // show two buttons to change the order status
               builder: (context) => AlertDialog(
                 title: const Text('تغيير حالة الطلب'),
                 content: Column(
@@ -40,7 +49,6 @@ class OrderCard extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        // change the order status to 'جاري التوصيل'
                         await context.read<HomeCubit>().changeOrderStatus(4, order.id!);
                         await context.read<HomeCubit>().getCurrentOrders();
                         Navigator.pop(context);
@@ -49,7 +57,6 @@ class OrderCard extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        // change the order status to 'تم التوصيل'
                         await context.read<HomeCubit>().changeOrderStatus(5, order.id!);
                         await context.read<HomeCubit>().getCurrentOrders();
                         Navigator.pop(context);
@@ -77,17 +84,9 @@ class OrderCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'الحالة: ${
-                          order.status == 1 ? 'لديه سائق' :
-                          order.status == 2 ? 'ملغي من قبل السائق' :
-                          order.status == 3 ? 'ذاهب للمطعم' :
-                          order.status == 4 ? 'جاري التوصيل' :
-                          order.status == 5 ? 'تم التوصيل' :
-                          order.status == 6 ? 'ملغي' : ''
-                        }',
+                        'الحالة: ${order.status == 1 ? 'لديه سائق' : order.status == 2 ? 'ملغي من قبل السائق' : order.status == 3 ? 'ذاهب للمطعم' : order.status == 4 ? 'جاري التوصيل' : order.status == 5 ? 'تم التوصيل' : order.status == 6 ? 'ملغي' : ''}',
                         style: TextStyle(
                           fontSize: ScreenUtil().setSp(14),
-                          // color: Colors.grey,
                         ),
                       ),
                     ],
@@ -95,34 +94,46 @@ class OrderCard extends StatelessWidget {
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      
-                      // const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          order.customerPhoneNumber != null ?
-                          SelectableText(
-                            "الهاتف: ${order.customerPhoneNumber!}",
-                            style: TextStyle(
-                              fontSize: ScreenUtil().setSp(14),
-                              fontWeight: FontWeight.bold,
+                          if (order.customerPhoneNumber != null)
+                            SelectableText(
+                              "الهاتف: ${order.customerPhoneNumber!}",
+                              style: TextStyle(
+                                fontSize: ScreenUtil().setSp(14),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ) : const SizedBox(),
                           Text(
-                            "المطعم: ${order.restaurantName?? ""}",
+                            "المطعم: ${order.restaurantName ?? ""}",
                             style: TextStyle(
                               fontSize: ScreenUtil().setSp(14),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            "الى منطقة: ${order.districtName?? ""}",
+                            "الى منطقة: ${order.districtName ?? ""}",
                             style: TextStyle(
                               fontSize: ScreenUtil().setSp(14),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.map),
+                        onPressed: () {
+                          final locationUrl = order.restaurantLocation ?? '';
+                          if (locationUrl.isNotEmpty) {
+                            _openGoogleMaps(locationUrl);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('رابط الموقع غير متوفر')),
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
