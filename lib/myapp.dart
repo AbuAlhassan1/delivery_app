@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:delivery/auth/controllers/auth/auth_cubit.dart';
 import 'package:delivery/common/controllers/cubit/orders_notification_cubit_cubit.dart';
 import 'package:delivery/common/controllers/l10n/l10n_cubit.dart';
@@ -29,11 +31,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => DriverInfoCubit()),
         BlocProvider(create: (context) => HomeCubit()),
       ],
-      child: const InitRoute()
+      child: const OKToast(
+        child: InitRoute(),
+      ),
     );
   }
 }
-
 
 class InitRoute extends StatefulWidget {
   const InitRoute({super.key});
@@ -43,47 +46,63 @@ class InitRoute extends StatefulWidget {
 }
 
 class _InitRouteState extends State<InitRoute> {
-
   @override
   void initState() {
     super.initState();
-    context.read<AuthCubit>().onAppInit();
+    _initializeAuth();
+  }
+
+  Future<void> _initializeAuth() async {
+    final authCubit = context.read<AuthCubit>();
+    await authCubit.onAppInit();
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Material(
-          color: Colors.white,
-          child: Column(
-            children: [
-              Expanded(
-                child: BlocBuilder<ThemeCubit, ThemeCubitState>(
-                  builder: (context, state) => ScreenUtilInit(
-                    designSize: const Size(400, 860),
-                    minTextAdapt: true,
-                    splitScreenMode: true,
-                    builder: (context, child) => OKToast(
-                      child: MaterialApp.router(
-                        backButtonDispatcher: null,
-                        scrollBehavior: MyCustomScrollBehavior(),
-                        scaffoldMessengerKey: scaffoldKey,
-                        theme: state == DarkTheme() ? Themes.darkTheme : Themes.lightTheme,
-                        localizationsDelegates: context.localizationDelegates,
-                        supportedLocales: context.supportedLocales,
-                        locale: context.locale,
-                        routerConfig: router,
-                        debugShowCheckedModeBanner: false,
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, authState) {
+        // Display a loading indicator during authentication initialization
+        if (authState is AuthLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        // Main app layout
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return Material(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: BlocBuilder<ThemeCubit, ThemeCubitState>(
+                      builder: (context, state) => ScreenUtilInit(
+                        designSize: const Size(400, 860),
+                        minTextAdapt: true,
+                        splitScreenMode: true,
+                        builder: (context, child) => MaterialApp.router(
+                          backButtonDispatcher: null,
+                          scrollBehavior: MyCustomScrollBehavior(),
+                          scaffoldMessengerKey: scaffoldKey,
+                          theme: state == DarkTheme() ? Themes.darkTheme : Themes.lightTheme,
+                          localizationsDelegates: context.localizationDelegates,
+                          supportedLocales: context.supportedLocales,
+                          locale: context.locale,
+                          routerConfig: router,
+                          debugShowCheckedModeBanner: false,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
-      }
+      },
     );
   }
 }

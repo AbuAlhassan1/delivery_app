@@ -17,11 +17,15 @@ class AuthCubit extends Cubit<AuthState> {
   bool isLoggedIn = false;
 
   Future<void> onAppInit() async {
+    emit(AuthLoading());
+
     final token = await storage.read(secureStorageUserInfo);
     if (token != null) {
       isLoggedIn = true;
+      emit(AuthSuccess());
     } else {
       isLoggedIn = false;
+      emit(AuthInitial());
     }
   }
 
@@ -36,7 +40,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     final response = await authRepository.login(email, password);
     if (response != null) {
-      if( response.statusCode == 200 ){
+      if (response.statusCode == 200) {
         isLoggedIn = true;
         String? firebaseToken = await getFirebaseToken();
         await authRepository.registerToken(firebaseToken.toString());

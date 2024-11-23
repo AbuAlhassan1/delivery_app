@@ -1,9 +1,14 @@
 import 'package:delivery/common/utils/interfaces/storage_interface.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorageRepository implements StorageInterFace {
-
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  final secureStorage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+      resetOnError: true,
+    ),
+  );
 
   @override
   Future<void> delete(String key) async {
@@ -17,7 +22,14 @@ class SecureStorageRepository implements StorageInterFace {
 
   @override
   Future<String?> read(String key) async {
-    return await secureStorage.read(key: key);
+    try {
+      return await secureStorage.read(key: key);
+    } catch (e) {
+      if (e is PlatformException && e.code == 'BadPaddingException') {
+        await secureStorage.deleteAll();
+        return null;
+      }
+    }
   }
 
   @override
@@ -29,5 +41,4 @@ class SecureStorageRepository implements StorageInterFace {
   Future<void> store(String key, String value) async {
     await secureStorage.write(key: key, value: value);
   }
-
 }
