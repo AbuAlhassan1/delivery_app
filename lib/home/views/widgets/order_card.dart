@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:delivery/home/controllers/home/home_cubit.dart';
 import 'package:delivery/home/models/list_of_orders_model.dart';
 import 'package:flutter/material.dart';
@@ -37,17 +39,19 @@ class OrderCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         // change the order status to 'جاري التوصيل'
-                        context.read<HomeCubit>().changeOrderStatus(4, order.id!);
+                        await context.read<HomeCubit>().changeOrderStatus(4, order.id!);
+                        await context.read<HomeCubit>().getCurrentOrders();
                         Navigator.pop(context);
                       },
                       child: const Text('جاري التوصيل'),
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         // change the order status to 'تم التوصيل'
-                        context.read<HomeCubit>().changeOrderStatus(5, order.id!);
+                        await context.read<HomeCubit>().changeOrderStatus(5, order.id!);
+                        await context.read<HomeCubit>().getCurrentOrders();
                         Navigator.pop(context);
                       },
                       child: const Text('تم التوصيل'),

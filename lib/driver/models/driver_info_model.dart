@@ -43,6 +43,7 @@ class Data {
   final bool? isWorking;
   final String? onlineFrom;
   final String? onlineTo;
+  final double? totalDeliveryAmount;
 
   Data({
     this.id,
@@ -56,6 +57,7 @@ class Data {
     this.isWorking,
     this.onlineFrom,
     this.onlineTo,
+    this.totalDeliveryAmount,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -69,7 +71,8 @@ class Data {
     isActive: json["isActive"],
     isWorking: json["isWorking"],
     onlineFrom: json["onlineFrom"],
-    onlineTo: json["onlineTo"]
+    onlineTo: json["onlineTo"],
+    totalDeliveryAmount: json["totalDeliveryAmount"]
   );
 
   Map<String, dynamic> toJson() => {

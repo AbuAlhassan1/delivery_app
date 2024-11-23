@@ -23,6 +23,7 @@ class _NotificationOrderCardState extends State<NotificationOrderCard> {
     if( !isLoading ) {
       setState(() => isLoading = true);
       await context.read<HomeCubit>().acceptOrRejectOrder(widget.order.id!, x);
+      await context.read<HomeCubit>().getCurrentOrders();
       setState(() => isLoading = false);
       context.read<OrdersNotificationCubitCubit>().removeOrder(
         context.read<OrdersNotificationCubitCubit>().orders.indexWhere((element) => element['id'] == widget.order.id)

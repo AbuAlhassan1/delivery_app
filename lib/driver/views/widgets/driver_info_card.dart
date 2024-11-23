@@ -102,6 +102,15 @@ class DriverInfoCard extends StatelessWidget {
                   ListTile(
                     onTap: () {},
                     leading: const Icon(TablerIcons.clock),
+                    title: const Text('اجمالي مبالغ التوصيل'),
+                    trailing: Text(
+                      "${context.read<DriverInfoCubit>().driverInfo!.data?.totalDeliveryAmount!}",
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal)
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const Icon(TablerIcons.clock),
                     title: const Text('رقم الهاتف'),
                     trailing: Text(
                       "${context.read<DriverInfoCubit>().driverInfo!.data?.phoneNumber?? 'لايوجد'}",
