@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 import 'package:delivery/common/controllers/cubit/orders_notification_cubit_cubit.dart';
@@ -32,6 +34,35 @@ void setupFirebaseMessaging(BuildContext context) async {
       );
     }
   });
+
+  // Listen when the app is in background but opened and the notification is tapped
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async{
+    log('background Message data: ${message.data}');
+    if (message.notification != null) {
+      context.read<OrdersNotificationCubitCubit>().orders = jsonDecode(message.data['orders'].toString());
+      await Future.delayed(const Duration(seconds: 2));
+      showDialog(
+        context: context,
+        barrierColor: Colors.transparent,
+        builder: (context) => AlertNotification(notification: message),
+      );
+    }
+  });
+
+  // Listen when the app is closed and the notification is tapped
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    log('closed Message data: ${initialMessage.data}');
+    if (initialMessage.notification != null) {
+      context.read<OrdersNotificationCubitCubit>().orders = jsonDecode(initialMessage.data['orders'].toString());
+      await Future.delayed(const Duration(seconds: 2));
+      showDialog(
+        context: context,
+        barrierColor: Colors.transparent,
+        builder: (context) => AlertNotification(notification: initialMessage),
+      );
+    }
+  }
 }
 
 class AlertNotification extends StatelessWidget {
