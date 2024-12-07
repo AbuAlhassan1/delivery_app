@@ -6,6 +6,7 @@ import 'package:delivery/helper/toast.dart';
 import 'package:delivery/home/models/list_of_orders_model.dart';
 import 'package:delivery/home/utils/interfaces/orders_interface.dart';
 import 'package:dio/dio.dart';
+import 'dart:convert';
 
 part 'home_state.dart';
 
@@ -14,14 +15,14 @@ class HomeCubit extends Cubit<HomeState> {
 
   final OrdersInterface ordersRepository = locator.get<OrdersInterface>();
 
-  bool isActiveDriver = false;
+  bool isActiveDriver = true;
   ListOfOrdersModel? listOfCurrentOrdersModel;
   bool isHomeDisabled = false;
 
-  toggleActiveDriver() async{
+  toggleActiveDriver() async {
     isActiveDriver = !isActiveDriver;
     bool result = await toggleIsActive();
-    if(result){
+    if (result) {
       emit(HomeLoaded());
     } else {
       isActiveDriver = !isActiveDriver;
@@ -35,14 +36,28 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       response = await ordersRepository.getCurrentOrders();
     } on DioException catch (e) {
-      if( e.response != null && e.response!.statusCode == 400 ){
+      if (e.response != null && e.response!.statusCode == 400) {
         isHomeDisabled = true;
       }
       log("Responsssssssssssssssse: ${e.response!.data.runtimeType}");
-      if( e.response!.data.runtimeType == Map ){
-        emit(HomeError(e.response!.data['message'].toString()));
+
+      // Ensure the response data is properly parsed as JSON
+      dynamic responseData;
+      try {
+        responseData = e.response!.data is String ? jsonDecode(e.response!.data) : e.response!.data;
+      } catch (error) {
+        emit(HomeError("حدث خطأ ما"));
         showToast(
-          message: e.response!.data['message'].toString(),
+          message: e.message.toString(),
+          toastType: ToastType.error,
+        );
+        return;
+      }
+
+      if (responseData is Map) {
+        emit(HomeError(responseData['message'].toString()));
+        showToast(
+          message: responseData['message'].toString(),
           toastType: ToastType.error,
         );
         return;
@@ -56,11 +71,11 @@ class HomeCubit extends Cubit<HomeState> {
       }
     }
 
-    if ( response != null && response.statusCode == 200) {
+    if (response != null && response.statusCode == 200) {
       listOfCurrentOrdersModel = ListOfOrdersModel.fromJson(response.data);
       isHomeDisabled = false;
     } else {
-      if( response != null && response.statusCode == 400 ){
+      if (response != null && response.statusCode == 400) {
         isHomeDisabled = true;
       }
       emit(HomeError(response != null ? response.data['message'] : 'حدث خطأ ما'));
@@ -89,7 +104,7 @@ class HomeCubit extends Cubit<HomeState> {
       return false;
     }
 
-    if ( response != null && response.statusCode == 200) {
+    if (response != null && response.statusCode == 200) {
       emit(HomeLoaded());
       showToast(
         message: "تم تغيير الحالة",
@@ -120,8 +135,9 @@ class HomeCubit extends Cubit<HomeState> {
       return;
     }
 
-    if ( response != null && response.statusCode == 200) {
+    if (response != null && response.statusCode == 200) {
       emit(HomeLoaded());
+      await getCurrentOrders();
       showToast(
         message: "تم تغيير حالة الطلب",
         toastType: ToastType.success,
@@ -150,7 +166,7 @@ class HomeCubit extends Cubit<HomeState> {
       return;
     }
 
-    if ( response != null && response.statusCode == 200) {
+    if (response != null && response.statusCode == 200) {
       emit(HomeLoaded());
       showToast(
         message: "تم تغيير حالة الطلب",

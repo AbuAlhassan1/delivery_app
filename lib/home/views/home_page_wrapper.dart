@@ -19,7 +19,6 @@ class HomePageWrapper extends StatefulWidget {
 }
 
 class _HomePageWrapperState extends State<HomePageWrapper> {
-
   late DatabaseReference databaseRef;
 
   Future<void> onInit() async {
@@ -28,11 +27,10 @@ class _HomePageWrapperState extends State<HomePageWrapper> {
     context.read<HomeCubit>().isActiveDriver = context.read<DriverInfoCubit>().driverInfo!.data!.isWorking!;
     // await context.read<HomeCubit>().getAllOrders();
 
-    databaseRef = FirebaseDatabase.instance.ref().child("DriverShowOrdersDialog")
-    .child(context.read<DriverInfoCubit>().driverInfo!.data!.driverId.toString());
+    databaseRef = FirebaseDatabase.instance.ref().child("DriverShowOrdersDialog").child(context.read<DriverInfoCubit>().driverInfo!.data!.driverId.toString());
 
     // Set up the listener for real-time updates
-    databaseRef.onValue.listen((DatabaseEvent event) async{
+    databaseRef.onValue.listen((DatabaseEvent event) async {
       log("updated");
       await context.read<HomeCubit>().getCurrentOrders();
       // context.read<HomeCubit>().getAllOrders();
@@ -104,74 +102,70 @@ class HomeVertical extends StatelessWidget {
                     onChanged: (value) async => context.read<HomeCubit>().toggleActiveDriver(),
                   ),
                 ),
-                Expanded(
-                  child: Builder(
-                    builder: (context) {
-
-                      if( state is HomeLoading ){
-                        return const Center(child: CircularProgressIndicator());
-                      } else if( state is HomeError ){
-                        return RefreshIndicator(
-                          onRefresh: () async => await context.read<HomeCubit>().getCurrentOrders(),
-                          child: SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            clipBehavior: Clip.none,
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height - 100,
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(40)),
-                                  child: Text(
-                                    state.message,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+                Expanded(child: Builder(builder: (context) {
+                  if (state is HomeLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is HomeError) {
+                    return RefreshIndicator(
+                      onRefresh: () async => await context.read<HomeCubit>().getCurrentOrders(),
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        clipBehavior: Clip.none,
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height - 100,
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(40)),
+                              child: Text(
+                                state.message,
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                        );
-                      } else if( context.read<HomeCubit>().listOfCurrentOrdersModel == null ){
-                        return const Center(child: Text('لا يوجد طلبات'));
-                      }
+                        ),
+                      ),
+                    );
+                  } else if (context.read<HomeCubit>().listOfCurrentOrdersModel == null) {
+                    return const Center(child: Text('لا يوجد طلبات'));
+                  }
 
-                      return Stack(
-                        children: [
-                          RefreshIndicator(
-                            onRefresh: () async => await context.read<HomeCubit>().getCurrentOrders(),
-                            child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(20)),
-                              itemCount: context.read<HomeCubit>().listOfCurrentOrdersModel!.data!.length,
-                              itemBuilder: (context, index) {
-                                return OrderCard(order: context.read<HomeCubit>().listOfCurrentOrdersModel!.data![index]);
-                              },
-                            ),
-                          ),
-                          // PostPage(),
-                          context.read<HomeCubit>().isActiveDriver ? const SizedBox()
+                  return Stack(
+                    children: [
+                      RefreshIndicator(
+                        onRefresh: () async => await context.read<HomeCubit>().getCurrentOrders(),
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(20)),
+                          itemCount: context.read<HomeCubit>().listOfCurrentOrdersModel!.data!.length,
+                          itemBuilder: (context, index) {
+                            return OrderCard(order: context.read<HomeCubit>().listOfCurrentOrdersModel!.data![index]);
+                          },
+                        ),
+                      ),
+                      // PostPage(),
+                      context.read<HomeCubit>().isActiveDriver
+                          ? const SizedBox()
                           : Container(
-                            color: Colors.black.withOpacity(0.9),
-                            width: double.infinity,
-                            child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.warning_rounded, color: Colors.red, size: 50),
-                                SizedBox(height: 10),
-                                Text(
-                                  'يجب تفعيل الحالة لتظهر الطلبات',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
+                              color: Colors.black.withOpacity(0.9),
+                              width: double.infinity,
+                              child: const Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.warning_rounded, color: Colors.red, size: 50),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'يجب تفعيل الحالة لتظهر الطلبات',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    }
-                  )
-                ),
+                    ],
+                  );
+                })),
               ],
             );
           },
@@ -204,8 +198,6 @@ class PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    
-    
   }
 
   @override
@@ -222,13 +214,13 @@ class PostPageState extends State<PostPage> {
       appBar: AppBar(title: Text("Post Details")),
       body: Center(
         child: _postData != null
-          ? Text("Post Data: $_postData")
-          : Column(
-            children: [
-              SelectableText("asdasd"),
-              // SelectableText(.toString()),
-            ],
-          ),
+            ? Text("Post Data: $_postData")
+            : Column(
+                children: [
+                  SelectableText("asdasd"),
+                  // SelectableText(.toString()),
+                ],
+              ),
       ),
     );
   }

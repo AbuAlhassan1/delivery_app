@@ -13,7 +13,6 @@ class OrdersHistory extends StatefulWidget {
 }
 
 class _OrdersHistoryState extends State<OrdersHistory> {
-
   @override
   void initState() {
     super.initState();
@@ -31,27 +30,27 @@ class _OrdersHistoryState extends State<OrdersHistory> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: BlocBuilder<DriverInfoCubit, DriverInfoState>(
-        builder: (context, state) {
-          if( state is DriverInfoLoading ){
-            return const Center(child: CircularProgressIndicator());
-          } else if( state is DriverInfoError ){
-            return const Center(child: Text('حدث خطأ ما'));
-          }
-          return context.read<DriverInfoCubit>().listOfOrdersModel != null ? RefreshIndicator(
-            onRefresh: () async => await context.read<DriverInfoCubit>().getAllOrders(),
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(20)),
-              itemCount: context.read<DriverInfoCubit>().listOfOrdersModel!.data!.length,
-              itemBuilder: (context, index) {
-                return OrderCard(order: context.read<DriverInfoCubit>().listOfOrdersModel!.data![index]);
-              },
-            ),
-          )
-          : state is DriverInfoError ? Center(child: Text(state.message))
-          : const Center(child: Text('حدث خطأ ما'));
+      body: BlocBuilder<DriverInfoCubit, DriverInfoState>(builder: (context, state) {
+        if (state is DriverInfoLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is DriverInfoError) {
+          return const Center(child: Text('حدث خطأ ما'));
         }
-      ),
+        return context.read<DriverInfoCubit>().listOfOrdersModel != null
+            ? RefreshIndicator(
+                onRefresh: () async => await context.read<DriverInfoCubit>().getAllOrders(),
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setHeight(20), vertical: ScreenUtil().setHeight(20)),
+                  itemCount: context.read<DriverInfoCubit>().listOfOrdersModel!.data!.length,
+                  itemBuilder: (context, index) {
+                    return OrderCard(order: context.read<DriverInfoCubit>().listOfOrdersModel!.data![index], isHistory: true);
+                  },
+                ),
+              )
+            : state is DriverInfoError
+                ? Center(child: Text(state.message))
+                : const Center(child: Text('حدث خطأ ما'));
+      }),
     );
   }
 }
